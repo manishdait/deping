@@ -1,0 +1,20 @@
+server:
+  port: 8080
+  
+spring:
+  application:
+    name: api
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/uptime_three
+    username: postgres
+    password: password
+  jpa:
+    database: postgresql
+    hibernate:
+      ddl-auto: create-drop
+  hiero:
+    account-id: ${HIERO_ACCOUNT_ID}
+    private-key: ${HIERO_PRIVATE_KEY}
+    network:
+      name: hedera-testnet
