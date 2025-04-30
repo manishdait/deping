@@ -16,13 +16,13 @@ public class AuthController {
     this.authService = authService;
   }
 
-  @PostMapping("/user/sign-up")
-  public ResponseEntity<UserAuthResponse> registerUser(@RequestBody UserRegistrationRequest request) {
+  @PostMapping("/sign-up")
+  public ResponseEntity<AuthResponse> registerUser(@RequestBody RegistrationRequest request) {
     return ResponseEntity.status(HttpStatus.CREATED).body(authService.registerUser(request));
   }
 
-  @PostMapping("/validator/sign-up")
-  public ResponseEntity<ValidatorAuthResponse> registerValidator(@RequestBody ValidatorRegistrationRequest request) {
-    return ResponseEntity.status(HttpStatus.CREATED).body(authService.registerValidator(request));
+  @PostMapping("/login")
+  public ResponseEntity<AuthResponse> authenticateUser(@RequestBody AuthRequest request) {
+    return ResponseEntity.status(HttpStatus.CREATED).body(authService.authenticateUser(request));
   }
 }

@@ -10,12 +10,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.api.security.JwtProvider;
-import com.example.api.user.Role;
+import com.example.api.shared.AbstractUserEntity;
+import com.example.api.shared.Role;
 import com.example.api.user.User;
 import com.example.api.user.UserRepository;
 import com.example.api.validator.Validator;
 import com.example.api.validator.ValidatorRepository;
-import com.hedera.hashgraph.sdk.Hbar;
 import com.openelements.hiero.base.AccountClient;
 import com.openelements.hiero.base.HieroException;
 import com.openelements.hiero.base.data.Account;
@@ -41,9 +41,32 @@ public class AuthService {
     this.accountClient = accountClient;
   }
 
-  public UserAuthResponse registerUser(UserRegistrationRequest request) {
+  public AuthResponse registerUser(RegistrationRequest request) {
+    if (request.role().equals("User")) {
+      return createUser(request); 
+    }
+    return createValidator(request);
+  }
+  
+  public AuthResponse authenticateUser(AuthRequest request) {
+    try {
+      Authentication authentication = authenticationManager.authenticate(
+        new UsernamePasswordAuthenticationToken(request.email(), request.password())
+      );
+
+      AbstractUserEntity user = (AbstractUserEntity) authentication.getPrincipal();
+      String accessToken = jwtProvider.generateToken(user.getEmail());
+      
+      return new AuthResponse(user.getEmail(), user.getRole().getRole(), accessToken, accessToken);
+    } catch (BadCredentialsException e) {
+      throw new BadCredentialsException("Invalid username or password");
+    } catch (Exception e) {
+      throw new RuntimeException(e.getMessage());
+    }
+  }
+
+  private AuthResponse createUser(RegistrationRequest request) {
     User user = User.builder()
-      .uname(request.uname())
       .email(request.email())
       .password(passwordEncoder.encode(request.password()))
       .role(Role.USER)
@@ -53,27 +76,10 @@ public class AuthService {
     userRepository.save(user);
 
     String accessToken = jwtProvider.generateToken(user.getEmail());
-    return new UserAuthResponse(user.getEmail(), accessToken, accessToken);
-  }
-  
-  public UserAuthResponse authenticateUser(AuthRequest request) {
-    try {
-      Authentication authentication = authenticationManager.authenticate(
-        new UsernamePasswordAuthenticationToken(request.email(), request.password())
-      );
-
-      User user = (User) authentication.getPrincipal();
-      String accessToken = jwtProvider.generateToken(user.getEmail());
-      
-      return new UserAuthResponse(user.getEmail(), accessToken, accessToken);
-    } catch (BadCredentialsException e) {
-      throw new BadCredentialsException("Invalid username or password");
-    } catch (Exception e) {
-      throw new RuntimeException(e.getMessage());
-    }
+    return new AuthResponse(user.getEmail(), "User", accessToken, accessToken);
   }
 
-  public ValidatorAuthResponse registerValidator(ValidatorRegistrationRequest request) {
+  private AuthResponse createValidator(RegistrationRequest request) {
     Account account;
 
     try {
@@ -93,42 +99,7 @@ public class AuthService {
       .build();
     
     validatorRepository.save(validator);
-
     String accessToken = jwtProvider.generateToken(validator.getEmail());
-    Hbar balance;
-    try {
-      balance = accountClient.getAccountBalance(account.accountId());
-    } catch (HieroException e) {
-      e.printStackTrace();
-      throw new RuntimeException("Error getting accountBalance");
-    }
-    return new ValidatorAuthResponse(validator.getEmail(), validator.getAccountId(), validator.getPubKey(), balance.getValue().doubleValue(), accessToken, accessToken);
-  }
-
-  public ValidatorAuthResponse authenticateValidator(AuthRequest request) {
-    try {
-      Authentication authentication = authenticationManager.authenticate(
-        new UsernamePasswordAuthenticationToken(request.email(), request.password())
-      );
-      
-      Validator validator = (Validator) authentication.getPrincipal();
-
-      String accessToken = jwtProvider.generateToken(validator.getEmail());
-
-      Hbar balance;
-      
-      try {
-        balance = accountClient.getAccountBalance(validator.getAccountId());
-      } catch (HieroException e) {
-        e.printStackTrace();
-        throw new RuntimeException("Error getting accountBalance");
-      }
-      
-      return new ValidatorAuthResponse(validator.getEmail(), validator.getAccountId(), validator.getPubKey(), balance.getValue().doubleValue(), accessToken, accessToken);
-    } catch (BadCredentialsException e) {
-      throw new BadCredentialsException("Invalid username or password");
-    } catch (Exception e) {
-      throw new RuntimeException(e.getMessage());
-    }
+    return new AuthResponse(validator.getEmail(), "Validator", accessToken, accessToken);
   }
 }

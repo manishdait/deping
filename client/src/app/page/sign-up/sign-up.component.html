@@ -1,26 +1,17 @@
-<div class="w-screen h-screen flex items-center justify-center bg-secondary-900">
-  <div class="w-[min(450px,100%)]">
+<div class="w-screen h-screen flex items-center justify-center">
+  <div class="w-[min(450px,100%)] p-4">
     <h1 class="text-4xl text-white font-bold text-center">Create an Account.</h1>
 
-    <div class="flex items-center text-white border-[.1em] border-secondary-800 overflow-hidden mt-8 rounded-sm">
-      <span class="block grow text-base font-bold text-center p-2 border-r-[.1em] border-secondary-800 cursor-pointer" [class]="{'bg-primary-800/60': role() === 'User'}" (click)="toggleRole('User')">User</span>
-      <span class="block grow text-base font-bold text-center p-2 cursor-pointer" [class]="{'bg-primary-800/60': role() === 'Validator'}" (click)="toggleRole('Validator')">Validator</span>
+    <div class="flex items-center text-white border-[.1em] border-purple-600 overflow-hidden mt-8 rounded-sm">
+      <span class="block grow text-base font-bold text-center p-2 border-r-[.1em] border-purple-600 cursor-pointer" [class]="{'bg-purple-600': role() === 'User'}" (click)="toggleRole('User')">User</span>
+      <span class="block grow text-base font-bold text-center p-2 cursor-pointer" [class]="{'bg-purple-600': role() === 'Validator'}" (click)="toggleRole('Validator')">Validator</span>
     </div>
 
     <form class="flex flex-col gap-4 mt-8" [formGroup]="form" (ngSubmit)="submit()">
-      @if (role() == 'User') {
-        <div class="flex flex-col gap-0.5">
-          <label class="text-[.8rem] text-white font-medium" for="uname">Username</label>
-          <input class="w-full text-base text-white border-[.1em] border-secondary-800 rounded-sm p-2 focus:border-primary-800 placeholder:text-neutral-600" type="text" id="uname" placeholder="Jhon Doe" formControlName="uname">
-          @if(!control['email'].errors && !control['password'].errors) {
-            <span class="text-red-700 text-[.8rem] font-medium">*Username required</span>
-          }
-        </div>
-      }
-
       <div class="flex flex-col gap-0.5">
         <label class="text-[.8rem] text-white font-medium" for="email">Email</label>
-        <input class="w-full text-base text-white font-medium border-[.1em] border-secondary-800 rounded-sm p-2 focus:border-primary-800 placeholder:text-neutral-600" type="email" id="email" placeholder="jhon@dev.in" formControlName="email">
+        <input class="w-full text-base text-white font-medium border-[.1em] border-neutral-600 rounded-sm p-2 focus:border-purple-600 placeholder:text-neutral-600" type="email" id="email" placeholder="jhon@dev.in" formControlName="email">
+
         @if(formError() && (control['email'].errors && control['email'].errors['required'])) {
           <span class="text-red-700 text-[.8rem] font-medium">*Email address required</span>
         }
@@ -31,7 +22,7 @@
 
       <div class="flex flex-col gap-0.5">
         <label class="text-[.8rem] text-white font-medium" for="pass">Password</label>
-        <input class="w-full text-base text-white font-medium border-[.1em] border-[#30303D] rounded-sm p-2 focus:border-primary-800 placeholder:text-neutral-600" type="password" id="pass" placeholder="your-secret" formControlName="password">
+        <input class="w-full text-base text-white font-medium border-[.1em] border-neutral-600 rounded-sm p-2 focus:border-purple-600 placeholder:text-neutral-600" type="password" id="pass" placeholder="your-secret" formControlName="password">
         @if(formError() && (control['password'].errors && control['password'].errors['required'])) {
           <span class="text-red-700 text-[.8rem] font-medium">*Password required</span>
         }
@@ -40,7 +31,9 @@
         }
       </div>
 
-      <button class="bg-primary-800 text-base text-white font-bold p-2 rounded-sm border-[.1em] border-primary-800 mt-2 cursor-pointer hover:bg-primary-900 hover:border-primary-900">Create Account.</button>
+      <button class="bg-purple-600 text-base text-white font-bold p-2 rounded-sm border-[.1em] border-purple-600 mt-2 cursor-pointer hover:bg-purple-700 hover:border-purple-700">Create Account.</button>
     </form>
+
+    <span class="block text-base text-white font-medium text-center p-4">Already have an account? <a class="text-purple-600 underline cursor-pointer" routerLink="/login" replaceUrl="true">Login</a></span>
   </div>
 </div>

@@ -1,7 +1,7 @@
 package com.example.api.validator;
 
-import com.example.api.user.AbstractUserEntity;
-import com.example.api.user.Role;
+import com.example.api.shared.AbstractUserEntity;
+import com.example.api.shared.Role;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

@@ -2,10 +2,11 @@ package com.example.api.user;
 
 import java.util.List;
 
+import com.example.api.shared.AbstractUserEntity;
+import com.example.api.shared.Role;
 import com.example.api.website.Website;
 
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -13,9 +14,6 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "_user")
 public class User extends AbstractUserEntity {
-  @Column(name = "uname")
-  private String uname;
-
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
   private List<Website> websites;
   
@@ -23,18 +21,9 @@ public class User extends AbstractUserEntity {
     super();
   }
 
-  public User(Long id, String uname, String email, String password, Role role, List<Website> websites) {
+  public User(Long id, String email, String password, Role role, List<Website> websites) {
     super(id, email, password, role);
-    this.uname = uname;
     this.websites = websites;
-  }
-
-  public String getUname() {
-    return uname;
-  }
-
-  public void setUname(String uname) {
-    this.uname = uname;
   }
 
   public List<Website> getWebsites() {
@@ -51,7 +40,6 @@ public class User extends AbstractUserEntity {
   
   public static class UserBuilder {
     private Long id;
-    private String uname;
     private String email;
     private String password;
     private Role role;
@@ -59,11 +47,6 @@ public class User extends AbstractUserEntity {
 
     public UserBuilder id(Long id) {
       this.id = id;
-      return this;
-    }
-    
-    public UserBuilder uname(String uname) {
-      this.uname = uname;
       return this;
     }
     
@@ -88,7 +71,7 @@ public class User extends AbstractUserEntity {
     }
 
     public User build() {
-      return new User(id, uname, email, password, role, websites);
+      return new User(id, email, password, role, websites);
     }
   }
 }

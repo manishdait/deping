@@ -1,8 +1,8 @@
-package com.example.api.user;
+package com.example.api.shared;
 
 public enum Role {
-  USER("ROLE_User"),
-  VALIDATOR("ROLE_Validator");
+  USER("User"),
+  VALIDATOR("Validator");
 
   private String role;
   

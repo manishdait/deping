@@ -1,15 +1,20 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Role } from '../../model/role.type';
-import { UserRegistration, ValidatorRegistration } from '../../model/auth.type';
+import { Router, RouterLink } from '@angular/router';
+import { RegistrationRequest } from '../../model/auth.type';
+import { AuthService } from '../../service/auth.service';
 
 @Component({
   selector: 'app-sign-up',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './sign-up.component.html',
   styleUrl: './sign-up.component.css'
 })
 export class SignUpComponent {
+  authService = inject(AuthService);
+  router = inject(Router);
+
   role = signal<Role>('User');
   formError = signal<boolean>(false);
   
@@ -17,7 +22,6 @@ export class SignUpComponent {
 
   constructor() {
     this.form = new FormGroup({
-      uname: new FormControl(''),
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [Validators.required, Validators.minLength(8)])
     });
@@ -37,32 +41,22 @@ export class SignUpComponent {
       return;
     }
 
-    if (this.role() === 'User' && this.form.get('uname')!.value === '') {
-      this.formError.set(false);
-      return;
-    }
-
     this.formError.set(false);
 
-    if (this.role() === 'User') {
-      this.createUser();
-    } else {
-      this.createValidator();
-    }
-  }
-
-  private createUser() {
-    const req: UserRegistration = {
-      uname: this.form.get('uname')!.value,
+    const req: RegistrationRequest = {
       email: this.form.get('email')!.value,
-      password: this.form.get('password')!.value
+      password: this.form.get('password')!.value,
+      role: this.role()
     }
-  }
 
-  private createValidator() {
-    const req: ValidatorRegistration = {
-      email: this.form.get('email')!.value,
-      password: this.form.get('password')!.value
-    }
+    this.authService.registerUser(req).subscribe({
+      next: (res) => {
+        if (res.role === 'User') {
+          this.router.navigate(['/user'], {replaceUrl: true});
+        } else {
+          this.router.navigate(['/validator'], {replaceUrl: true});
+        }
+      }
+    })
   }
 }

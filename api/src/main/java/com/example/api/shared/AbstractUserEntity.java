@@ -1,4 +1,4 @@
-package com.example.api.user;
+package com.example.api.shared;
 
 import java.security.Principal;
 import java.util.Collection;
@@ -83,7 +83,7 @@ public class AbstractUserEntity implements UserDetails, Principal {
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    return List.of(new SimpleGrantedAuthority(this.role.getRole()));
+    return List.of(new SimpleGrantedAuthority("ROLE_" + this.role.getRole()));
   }
 
   @Override
