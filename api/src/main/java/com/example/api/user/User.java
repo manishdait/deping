@@ -6,7 +6,6 @@ import com.example.api.shared.AbstractUserEntity;
 import com.example.api.shared.Role;
 import com.example.api.website.Website;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -14,7 +13,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "_user")
 public class User extends AbstractUserEntity {
-  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "user")
   private List<Website> websites;
   
   public User() {

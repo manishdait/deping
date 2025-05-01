@@ -86,7 +86,7 @@ public class AuthService {
       account = accountClient.createAccount();
     } catch (HieroException e) {
       e.printStackTrace();
-      throw new RuntimeException("Error creating account");
+      throw new RuntimeException("Error creating hiero account");
     }
 
     Validator validator = Validator.builder()

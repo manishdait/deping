@@ -1,1 +1,23 @@
-<p>validator works!</p>
+@if(wallet()) {
+  <app-wallet [validator]="validator()" (cancel)="toggleWallet()"/>
+}
+
+<div class="w-screen h-screen flex p-4">
+  <div class="flex flex-col  w-[min(100%,900px)] mx-auto">
+    <section class="flex items-center justify-between gap-4 mb-8">
+      <span class="text-2xl text-white font-medium">{{ 'Hi, ' + validator().email }}</span>
+      <button class="bg-purple-600 text-base text-white font-bold p-2 rounded-sm border-[.1em] border-purple-600 mt-2 cursor-pointer hover:bg-purple-700 hover:border-purple-700" type="button" (click)="toggleWallet()">Wallet</button>
+    </section>
+
+    <section class="flex flex-col gap-4 items-center">
+      <span class="flex items-end gap-1">
+        <h1 class="text-6xl text-white font-mediumtext-center">{{ validator().payout }}</h1>
+        <span class="text-base text-white/60 font-medium">HBAR</span>
+      </span>
+    </section>
+
+    <div class="w-[min(100%,400px)] p-[.1em] mx-auto my-4"></div>
+
+    <button class="bg-purple-600 text-base text-white font-bold p-2 rounded-sm border-[.1em] border-purple-600 mt-2 cursor-pointer hover:bg-purple-700 hover:border-purple-700 mx-auto" type="button" (click)="connect()">Start Earning</button>
+  </div>
+</div>

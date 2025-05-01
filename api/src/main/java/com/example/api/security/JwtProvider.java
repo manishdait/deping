@@ -17,7 +17,7 @@ import io.jsonwebtoken.security.Keys;
 @Service
 public class JwtProvider {
   private String secretKey = "8cfe790badd33fc5655c7a1f713b7fde3142fe6c204e21a19ba64defb43edf46";
-  private Integer expiration = 2*24;
+  private Integer expiration = 60*60;
 
   public String generateToken(String username, Integer expiration) {
     return Jwts.builder()

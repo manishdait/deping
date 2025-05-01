@@ -1,0 +1,21 @@
+<div class="fixed w-screen flex items-center justify-center h-screen top-0 left-0 z-20 bg-neutral-800/40">
+  <div class="relative w-[min(100%,400px)] bg-neutral-800 p-4 rounded-sm">
+    <div class="absolute top-4 right-6 cursor-pointer" (click)="toggleCancel()">
+      <fa-icon class="text-base text-white" [icon]="'xmark'"/>
+    </div>
+
+    <div class="flex flex-col items-center justify-center gap-1">
+      <div class="w-[4rem] h-[4rem] flex items-center justify-center bg-purple-600 rounded-xl">
+        <fa-icon class="text-white text-3xl" [icon]="'shield'"/>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <span class="text-base text-white/60">{{ validator().pubKey.substring(0,7) + '...' + validator().pubKey.substring(validator().pubKey.length - 4) }}</span>
+        <fa-icon class="text-white/60 cursor-pointer" [icon]="'clone'"/>
+      </div>
+      <span class="text-[.9rem] text-white/60">{{ validator().balance + ' HBAR'}}</span>
+    </div>
+
+    <span class="block text-base text-center text-white/60 my-4">{{ validator().email }}</span>
+  </div>
+</div>
