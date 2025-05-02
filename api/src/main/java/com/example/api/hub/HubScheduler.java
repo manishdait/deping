@@ -16,7 +16,7 @@ public class HubScheduler {
     this.messagingTemplate = messagingTemplate;
   }
 
-  @Scheduled(fixedRate = 1000)
+  @Scheduled(fixedRate = 10000)
   public void dispatchUrl() {
     messagingTemplate.convertAndSend("/topic/public", new Url("test" + Instant.now()));
   }

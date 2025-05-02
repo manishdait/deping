@@ -38,4 +38,8 @@ export class AuthService {
     this.localStore.store('username', response.email);
     this.localStore.store('role', response.role);
   }
+
+  get username(): string {
+    return this.localStore.retrieve('username');
+  }
 }

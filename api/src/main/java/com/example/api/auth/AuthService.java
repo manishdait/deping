@@ -88,11 +88,13 @@ public class AuthService {
       .password(passwordEncoder.encode(request.password()))
       .role(Role.VALIDATOR)
       .payout(0.0)
-      .pubKey(account.publicKey().toString())
       .accountId(account.accountId().toString())
+      .pubKey(account.publicKey().toString())
+      .prvKey(account.privateKey().toString())
       .build();
     
     validatorRepository.save(validator);
+    
     String accessToken = jwtProvider.generateToken(validator.getEmail());
     return new AuthResponse(validator.getEmail(), "Validator", accessToken, accessToken);
   }

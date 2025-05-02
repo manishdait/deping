@@ -6,13 +6,13 @@
   <div class="w-[min(100%,900px)] flex flex-col gap-8 mx-auto">
     <div class="flex items-center justify-between gap-4 flex-wrap">
       <h1 class="text-2xl text-white font-bold">Uptime Monitor</h1>
-      <button class="bg-purple-600 text-base text-white font-bold p-2 rounded-sm border-[.1em] border-purple-600 mt-2 cursor-pointer hover:bg-purple-700 hover:border-purple-700" type="button" (click)="toggleAddUrl()">Add Website</button>
+      <button class="bg-purple-600 text-base text-white font-medium p-2 rounded-md border-[.1em] border-purple-600 mt-2 cursor-pointer hover:bg-purple-700 hover:border-purple-700" type="button" (click)="toggleAddUrl()">Add Website</button>
     </div>
 
     
     <ul class="list-none flex flex-col gap-4">
       @for(website of websites(); track website.id) {
-        <li class="bg-neutral-800 rounded-sm text-base text-white font-medium p-4">{{ website.url }}</li>
+        <li class="bg-neutral-800 rounded-md text-base text-white font-medium p-4">{{ website.url }}</li>
       }
     </ul>
   </div>

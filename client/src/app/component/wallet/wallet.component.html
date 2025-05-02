@@ -1,21 +1,43 @@
 <div class="fixed w-screen flex items-center justify-center h-screen top-0 left-0 z-20 bg-neutral-800/40">
-  <div class="relative w-[min(100%,400px)] bg-neutral-800 p-4 rounded-sm">
-    <div class="absolute top-4 right-6 cursor-pointer" (click)="toggleCancel()">
-      <fa-icon class="text-base text-white" [icon]="'xmark'"/>
-    </div>
-
-    <div class="flex flex-col items-center justify-center gap-1">
-      <div class="w-[4rem] h-[4rem] flex items-center justify-center bg-purple-600 rounded-xl">
-        <fa-icon class="text-white text-3xl" [icon]="'shield'"/>
+  <div class="relative w-[min(100%,400px)] bg-neutral-800 p-4 rounded-md">
+    @if(!loading()) {
+      <div class="absolute top-4 right-6 cursor-pointer" (click)="toggleCancel()">
+        <fa-icon class="text-base text-white" [icon]="'xmark'"/>
       </div>
-
-      <div class="flex items-center gap-2">
-        <span class="text-base text-white/60">{{ validator().pubKey.substring(0,7) + '...' + validator().pubKey.substring(validator().pubKey.length - 4) }}</span>
-        <fa-icon class="text-white/60 cursor-pointer" [icon]="'clone'"/>
+  
+      <div class="flex flex-col items-center justify-center gap-1">
+        <div class="w-[4rem] h-[4rem] flex items-center justify-center bg-purple-600 rounded-xl">
+          <fa-icon class="text-white text-3xl" [icon]="'shield'"/>
+        </div>
+  
+        <div class="flex items-center gap-2">
+          @if(wallet().pubKey !== '') {
+            <span class="text-base text-white/60">{{ wallet().pubKey.substring(0,7) + '...' + wallet().pubKey.substring(wallet().pubKey.length - 4) }}</span>
+            <fa-icon class="text-white/60 cursor-pointer" [icon]="'clone'" (click)="copyAddress()"/>
+          }
+        </div>
+        <span class="text-[.9rem] text-white/60">{{ wallet().balance + ' HBAR'}}</span>
       </div>
-      <span class="text-[.9rem] text-white/60">{{ validator().balance + ' HBAR'}}</span>
-    </div>
+  
+      <span class="block text-base text-center text-white/60 my-4">{{ wallet().uname }}</span>  
 
-    <span class="block text-base text-center text-white/60 my-4">{{ validator().email }}</span>
+      <div class="border-b-[.1em] border-neutral-400 my-8"></div>
+
+      <form class="flex flex-col gap-4" [formGroup]="form" (ngSubmit)="transfer()">
+        <div class="flex flex-col gap-0.5">
+          <label class="text-[.8rem] text-white font-medium" for="to">Send To</label>
+          <input class="w-full text-base text-white font-medium border-[.1em] border-neutral-600 rounded-md p-2 focus:border-purple-600 placeholder:text-neutral-600" id="to" type="text" placeholder="0x0000...0000" name="pubKey" formControlName="pubKey">
+        </div>
+
+        <div class="flex flex-col gap-0.5">
+          <label class="text-[.8rem] text-white font-medium" for="amount">Amount</label>
+          <input class="w-full text-base text-white font-medium border-[.1em] border-neutral-600 rounded-md p-2 focus:border-purple-600 placeholder:text-neutral-600" id="amount" type="text" placeholder="0.0" name="amount" formControlName="amount">
+        </div>
+
+        <button class="bg-purple-600 text-base text-white font-medium p-2 rounded-md border-[.1em] border-purple-600 cursor-pointer hover:bg-purple-700 hover:border-purple-700" type="submit">Send</button>
+      </form>
+    } @else {
+      <span class="block text-base text-center text-white/60 my-4">Fetching Info...</span>
+    }
   </div>
 </div>

@@ -3,12 +3,15 @@ import { Client, Stomp, StompHeaders } from '@stomp/stompjs'
 import { LocalStorageService } from 'ngx-webstorage';
 import { Subject } from 'rxjs';
 import SockJS from 'sockjs-client';
+import { TicksRequest } from '../model/ticks.type';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HubService {
   stompClient: Client | null = null;
+
+  messageRecive = new Subject<{url: string}>();
   connected = new Subject<boolean>();
 
   constructor(private localstore: LocalStorageService) {
@@ -16,9 +19,7 @@ export class HubService {
   }
 
   connect() {
-    console.log('Bearer ' + this.localstore.retrieve('accessToken'));
-    
-    const socket = new SockJS('http://localhost:8080/ws-hub');
+    const socket = new SockJS('http://localhost:8080/ws-hub?token=' + this.localstore.retrieve('accessToken'));
 
     this.stompClient = new Client({
       webSocketFactory: () => socket,
@@ -30,12 +31,7 @@ export class HubService {
       this.connected.next(true);
 
       this.stompClient?.subscribe('/topic/public', (message) => {
-        console.log(message.body);
-      });
-
-      this.stompClient?.publish({
-        destination: '/app/tbd',
-        body: JSON.stringify({ url: 'JOin' })
+        this.messageRecive.next(JSON.parse(message.body));
       });
     }
 
@@ -46,11 +42,13 @@ export class HubService {
     this.stompClient?.activate();
   }
 
-  sendMessage(msg: string) {
+  sendMessage(msg: TicksRequest) {
+    msg.validator = this.localstore.retrieve('username');
+    
     if(this.stompClient && this.stompClient.connected) {
       this.stompClient?.publish({
-        destination: '/app/tbd',
-        body: JSON.stringify({ message: msg })
+        destination: '/app/generate-ticks',
+        body: JSON.stringify(msg)
       });
     }
   }
