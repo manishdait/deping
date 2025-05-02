@@ -9,13 +9,12 @@ import org.springframework.stereotype.Service;
 import com.example.api.shared.PagedEntity;
 import com.example.api.user.User;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class WebsiteService {
   private final WebsiteRepository websiteRepository;
-
-  public WebsiteService(WebsiteRepository websiteRepository) {
-    this.websiteRepository = websiteRepository;
-  }
   
   public WebsiteResponse createWebsite(WebsiteRequest request, Authentication authentication) {
     User user = (User) authentication.getPrincipal();

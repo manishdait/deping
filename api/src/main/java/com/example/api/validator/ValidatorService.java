@@ -5,13 +5,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class ValidatorService implements UserDetailsService {
   private final ValidatorRepository validatorRepository;
-
-  public ValidatorService(ValidatorRepository validatorRepository) {
-    this.validatorRepository = validatorRepository;
-  } 
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

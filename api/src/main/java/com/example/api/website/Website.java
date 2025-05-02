@@ -11,7 +11,17 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+@Builder
 @Entity
 @Table(name = "website")
 public class Website {
@@ -27,65 +37,4 @@ public class Website {
   @ManyToOne()
   @JoinColumn(name = "user_id")
   private User user;
-  
-  public Website() {}
-  
-  public Website(Long id, String url, User user) {
-    this.id = id;
-    this.url = url;
-    this.user = user;
-  }
-
-  public Long getId() {
-    return id;
-  }
-
-  public void setId(Long id) {
-    this.id = id;
-  }
-
-  public String getUrl() {
-    return url;
-  }
-
-  public void setUrl(String url) {
-    this.url = url;
-  }
-
-  public User getUser() {
-    return user;
-  }
-
-  public void setUser(User user) {
-    this.user = user;
-  }
-
-  public static  WebsiteBuilder builder() {
-    return new WebsiteBuilder();
-  }
-
-  public static class WebsiteBuilder {
-    private Long id;
-    private String url;
-    private User user;
-    
-    public WebsiteBuilder id(Long id) {
-      this.id = id;
-      return this;
-    }
-    
-    public WebsiteBuilder url(String url) {
-      this.url = url;
-      return this;
-    }
-    
-    public WebsiteBuilder user(User user) {
-      this.user = user;
-      return this;
-    }
-
-    public Website build() {
-      return new Website(id, url, user);
-    }
-  }
 }

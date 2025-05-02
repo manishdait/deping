@@ -16,16 +16,13 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 
 @Component
+@RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
   private final JwtProvider jwtProvider;
   private final AbstractUserService abstractUserService;
-
-  public JwtFilter(JwtProvider jwtProvider, AbstractUserService abstractUserService) {
-    this.jwtProvider = jwtProvider;
-    this.abstractUserService = abstractUserService;
-  }
 
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -47,6 +44,7 @@ public class JwtFilter extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(authentication);
       }
     }
+    
     filterChain.doFilter(request, response);
   }
 }

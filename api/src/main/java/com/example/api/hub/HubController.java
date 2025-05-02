@@ -6,7 +6,7 @@ import org.springframework.stereotype.Controller;
 
 @Controller
 public class HubController {
-  @MessageMapping("/tbd")
+  @MessageMapping("/stats")
   @SendTo("/topic/public")
   public Url tbd(Url message) {
     return new Url("from server : " + message.getUrl());

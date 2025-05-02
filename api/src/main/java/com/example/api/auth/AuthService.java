@@ -20,7 +20,10 @@ import com.openelements.hiero.base.AccountClient;
 import com.openelements.hiero.base.HieroException;
 import com.openelements.hiero.base.data.Account;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class AuthService {
   private final UserRepository userRepository;
   private final ValidatorRepository validatorRepository;
@@ -31,15 +34,6 @@ public class AuthService {
   private final JwtProvider jwtProvider;
 
   private final AccountClient accountClient;
-
-  public AuthService(UserRepository userRepository, ValidatorRepository validatorRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtProvider jwtProvider, AccountClient accountClient) {
-    this.userRepository = userRepository;
-    this.validatorRepository = validatorRepository;
-    this.passwordEncoder = passwordEncoder;
-    this.authenticationManager = authenticationManager;
-    this.jwtProvider = jwtProvider;
-    this.accountClient = accountClient;
-  }
 
   public AuthResponse registerUser(RegistrationRequest request) {
     if (request.role().equals("User")) {

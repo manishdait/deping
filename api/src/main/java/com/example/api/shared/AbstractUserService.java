@@ -10,16 +10,19 @@ import org.springframework.stereotype.Service;
 import com.example.api.user.UserService;
 import com.example.api.validator.ValidatorService;
 
+import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class AbstractUserService implements UserDetailsService {
   private final UserService userService;
   private final ValidatorService validatorService;
 
-  private final List<UserDetailsService> services;
+  private List<UserDetailsService> services;
 
-  public AbstractUserService(UserService userService, ValidatorService validatorService) {
-    this.userService = userService;
-    this.validatorService = validatorService;
+  @PostConstruct
+  public void init() {
     this.services = List.of(this.userService, this.validatorService);
   }
 

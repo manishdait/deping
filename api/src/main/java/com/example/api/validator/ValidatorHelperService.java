@@ -7,15 +7,12 @@ import com.hedera.hashgraph.sdk.Hbar;
 import com.openelements.hiero.base.AccountClient;
 import com.openelements.hiero.base.HieroException;
 
-@Service
-public class ValidatorHelperService {
-  private final ValidatorRepository validatorRepository;
-  private final AccountClient accountClient;
+import lombok.RequiredArgsConstructor;
 
-  public ValidatorHelperService(ValidatorRepository validatorRepository, AccountClient accountClient) {
-    this.validatorRepository = validatorRepository;
-    this.accountClient = accountClient;
-  }
+@Service
+@RequiredArgsConstructor
+public class ValidatorHelperService {
+  private final AccountClient accountClient;
 
   public ValidatorDto getValidator(Authentication authentication) {
     Validator validator = (Validator) authentication.getPrincipal();
