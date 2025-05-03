@@ -1,11 +1,13 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { WalletComponent } from '../../component/wallet/wallet.component';
 import { HubService } from '../../service/hub.service';
-import { TicksRequest } from '../../model/ticks.type';
+import { TicksDto } from '../../model/ticks.type';
 import { PayoutService } from '../../service/payout.service';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { fontawsomeIcons } from '../../shared/fa-icons';
 import { AuthService } from '../../service/auth.service';
+import { UptimeService } from '../../service/uptime.service';
+import { WebsiteResponse } from '../../model/website.type';
 
 @Component({
   selector: 'app-validator',
@@ -16,10 +18,12 @@ import { AuthService } from '../../service/auth.service';
 export class ValidatorComponent implements OnInit {
   authService = inject(AuthService);
   payoutService = inject(PayoutService);
+  uptimeService = inject(UptimeService);
   hubService = inject(HubService);
   faLibrary = inject(FaIconLibrary);
 
   wallet = signal(false);
+  startedValidating = signal(false);
 
   username = signal(this.authService.username);
   payouts = signal(0);
@@ -30,14 +34,14 @@ export class ValidatorComponent implements OnInit {
     this.getPayouts();
 
     this.hubService.connected.subscribe({
-      next: () => {
-        console.log("connected");  
+      next: (res) => {
+        this.startedValidating.set(res);
       }
     });
 
-    this.hubService.messageRecive.subscribe({
+    this.hubService.validateRequest.subscribe({
       next: (res) => {
-        this.tbd(res.url);
+        this.checkUptime(res);
       }
     })
   }
@@ -62,18 +66,35 @@ export class ValidatorComponent implements OnInit {
     });
   }
 
-  tbd(msg: string) {
-    const req: TicksRequest = {
-      status: 'Clinet ' + msg,
-      websiteId: 0,
-      validator: ''
-    }
-
-    this.hubService.sendMessage(req);
-    this.getPayouts();
+  checkUptime(website: WebsiteResponse) {
+    this.uptimeService.getUptime(website.url)
+      .then((res) => {
+        const req: TicksDto = {
+          status: 'UP',
+          websiteId: website.id,
+          validator: ''
+        }
+    
+        this.hubService.sendMessage(req);
+        this.getPayouts();
+      })
+      .catch((err) => {
+        const req: TicksDto = {
+          status: 'DOWN',
+          websiteId: website.id,
+          validator: ''
+        }
+    
+        this.hubService.sendMessage(req);
+        this.getPayouts();
+      }); 
   }
 
-  connect() {
+  startValidate() {
     this.hubService.connect();
+  }
+
+  stopValidate() {
+    this.hubService.disconnect();
   }
 }

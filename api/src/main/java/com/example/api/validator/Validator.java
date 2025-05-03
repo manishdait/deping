@@ -24,7 +24,7 @@ public class Validator extends AbstractUserEntity {
   private String accountId;
 
   @Column(name = "payout")
-  private Double payout;
+  private Long payout;
 
   @JsonIgnore
   @Column(name = "pubkey")

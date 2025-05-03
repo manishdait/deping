@@ -87,7 +87,7 @@ public class AuthService {
       .email(request.email())
       .password(passwordEncoder.encode(request.password()))
       .role(Role.VALIDATOR)
-      .payout(0.0)
+      .payout(0l)
       .accountId(account.accountId().toString())
       .pubKey(account.publicKey().toString())
       .prvKey(account.privateKey().toString())

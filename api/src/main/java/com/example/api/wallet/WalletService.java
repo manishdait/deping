@@ -37,12 +37,12 @@ public class WalletService {
 
   public WalletDto transferHbar(TransferHbarRequest request, Authentication authentication) {
     Validator validator = (Validator) authentication.getPrincipal();
-
+    
     TransferTransaction transactionTx = new TransferTransaction()
-      .addHbarTransfer(AccountId.fromString(validator.getAccountId()), Hbar.from(BigDecimal.valueOf(request.amount()).multiply(BigDecimal.valueOf(-1))))
-      .addHbarTransfer(EvmAddress.fromString(request.pubKey()), Hbar.from(BigDecimal.valueOf(request.amount())))
-      .freezeWith(hieroContext.getClient());
-
+    .addHbarTransfer(AccountId.fromString(validator.getAccountId()), Hbar.from(BigDecimal.valueOf(request.amount()).multiply(BigDecimal.valueOf(-1))))
+    .addHbarTransfer(EvmAddress.fromString(request.pubKey()), Hbar.from(BigDecimal.valueOf(request.amount())))
+    .freezeWith(hieroContext.getClient());
+    
     try {
       TransactionResponse txResponse = transactionTx.sign(PrivateKey.fromString(validator.getPrvKey())).execute(hieroContext.getClient());
       txResponse.getReceipt(hieroContext.getClient());
@@ -50,7 +50,7 @@ public class WalletService {
       e.printStackTrace();
       System.out.println(e.getCause());
     }
-
+    
     WalletData walletData = fetchWalletData(validator.getAccountId());
     return new WalletDto(validator.getEmail(), validator.getAccountId(), walletData.pubKey(), walletData.balance()); 
   }

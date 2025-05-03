@@ -23,11 +23,14 @@ public class PayoutService {
   private final ValidatorRepository validatorRepository;
   private final HieroContext hieroContext;
 
+  private final int payoutFactor = 1000000;
+
   @Transactional
   public Map<String, Double> claimPayouts(Authentication authentication) {
     Validator validator = (Validator) authentication.getPrincipal();
 
-    double payout = validator.getPayout();
+    double payout = (double) validator.getPayout() / (double) payoutFactor;
+
     if (payout <= 0) {
       throw new RuntimeException("Payouts not available");
     }
@@ -46,7 +49,7 @@ public class PayoutService {
       throw new RuntimeException("Error transfering payouts"); 
     }
 
-    validator.setPayout(0.0);
+    validator.setPayout(0l);
     validatorRepository.save(validator);
 
     return Map.of("payout_recived", payout);
@@ -54,6 +57,7 @@ public class PayoutService {
 
   public PayoutDto getPayouts(Authentication authentication) {
     Validator validator = (Validator) authentication.getPrincipal();
-    return new PayoutDto(validator.getPayout());
+    double payout = (double) validator.getPayout() / (double) payoutFactor;
+    return new PayoutDto(payout);
   }
 }

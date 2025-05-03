@@ -20,8 +20,12 @@
       </span>
 
       <div class="flex items-center justify-center gap-4">
-        <button class="bg-purple-600 text-base text-white font-medium p-2 rounded-sm border-[.1em] border-purple-600 mt-2 cursor-pointer hover:bg-purple-700 hover:border-purple-700 mx-auto" type="button" (click)="connect()">Start Earning</button>
-        <button class="bg-purple-600 text-base text-white font-medium p-2 rounded-sm border-[.1em] border-purple-600 mt-2 cursor-pointer hover:bg-purple-700 hover:border-purple-700 mx-auto" type="button" (click)="claimPayouts()">Claim Payouts</button>
+        @if (!startedValidating()) {
+          <button class="bg-purple-600 text-base text-white font-medium p-2 rounded-sm border-[.1em] border-purple-600 mt-2 cursor-pointer hover:bg-purple-700 hover:border-purple-700 mx-auto" type="button" (click)="startValidate()">Start Earning</button>
+          <button class="bg-purple-600 text-base text-white font-medium p-2 rounded-sm border-[.1em] border-purple-600 mt-2 cursor-pointer hover:bg-purple-700 hover:border-purple-700 mx-auto" type="button" (click)="claimPayouts()">Claim Payouts</button>
+        } @else {
+          <button class="bg-purple-600 text-base text-white font-medium p-2 rounded-sm border-[.1em] border-purple-600 mt-2 cursor-pointer hover:bg-purple-700 hover:border-purple-700 mx-auto" type="button" (click)="stopValidate()">Stop</button>
+        }
       </div>
     </section>
   </div>

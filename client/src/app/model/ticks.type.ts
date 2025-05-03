@@ -1,4 +1,4 @@
-export interface TicksRequest {
+export interface TicksDto {
   status: string;
   websiteId: number;
   validator: string;

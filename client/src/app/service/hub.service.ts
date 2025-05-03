@@ -3,7 +3,8 @@ import { Client, Stomp, StompHeaders } from '@stomp/stompjs'
 import { LocalStorageService } from 'ngx-webstorage';
 import { Subject } from 'rxjs';
 import SockJS from 'sockjs-client';
-import { TicksRequest } from '../model/ticks.type';
+import { TicksDto } from '../model/ticks.type';
+import { WebsiteResponse } from '../model/website.type';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ import { TicksRequest } from '../model/ticks.type';
 export class HubService {
   stompClient: Client | null = null;
 
-  messageRecive = new Subject<{url: string}>();
+  validateRequest = new Subject<WebsiteResponse>();
   connected = new Subject<boolean>();
 
   constructor(private localstore: LocalStorageService) {
@@ -31,7 +32,7 @@ export class HubService {
       this.connected.next(true);
 
       this.stompClient?.subscribe('/topic/public', (message) => {
-        this.messageRecive.next(JSON.parse(message.body));
+        this.validateRequest.next(JSON.parse(message.body));
       });
     }
 
@@ -42,7 +43,7 @@ export class HubService {
     this.stompClient?.activate();
   }
 
-  sendMessage(msg: TicksRequest) {
+  sendMessage(msg: TicksDto) {
     msg.validator = this.localstore.retrieve('username');
     
     if(this.stompClient && this.stompClient.connected) {
@@ -56,6 +57,7 @@ export class HubService {
   disconnect() {
     if (this.stompClient) {
       this.stompClient.deactivate();
+      this.connected.next(false);
     }
   }
 }
