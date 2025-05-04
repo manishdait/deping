@@ -9,7 +9,7 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=uptime_three
+      - POSTGRES_DB=deping_db
 
 volumes:
   data: {}
