@@ -24,6 +24,7 @@ export class ValidatorComponent implements OnInit {
 
   wallet = signal(false);
   startedValidating = signal(false);
+  processingPayout = signal(false);
 
   username = signal(this.authService.username);
   payouts = signal(0);
@@ -59,9 +60,11 @@ export class ValidatorComponent implements OnInit {
   }
 
   claimPayouts() {
+    this.processingPayout.set(true);
     this.payoutService.claimPayouts().subscribe({
-      next: (res) => {
-        console.log(res);
+      next: () => {
+        this.getPayouts();
+        this.processingPayout.set(false);
       }
     });
   }

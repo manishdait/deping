@@ -24,8 +24,8 @@ export class WebsiteService {
     }});
   }
 
-  fetchWebsitesTicks(id: number): Observable<Page<TicksDto[]>> {
-    return this.client.get<Page<TicksDto[]>>(`http://localhost:8080/api/v1/websites/tick/${id}`, {headers: {
+  fetchWebsitesTicks(id: number): Observable<TicksDto[]> {
+    return this.client.get<TicksDto[]>(`http://localhost:8080/api/v1/websites/tick/${id}`, {headers: {
       'Authorization': 'Bearer ' + this.localstore.retrieve('accessToken')
     }});
   }

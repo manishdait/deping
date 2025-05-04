@@ -1,7 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AuthRequest } from '../../model/auth.type';
-import { Role } from '../../model/role.type';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../service/auth.service';
 

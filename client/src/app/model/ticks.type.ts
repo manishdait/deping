@@ -1,5 +1,7 @@
 export interface TicksDto {
-  status: string;
+  status: Status;
   websiteId: number;
   validator: string;
 }
+
+export type Status = 'UP' | 'DOWN';

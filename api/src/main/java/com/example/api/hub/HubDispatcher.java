@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 @EnableScheduling
 @RequiredArgsConstructor
-public class HubScheduler {
+public class HubDispatcher {
   private final WebsiteRepository websiteRepository;
   private final SimpMessagingTemplate messagingTemplate;
 

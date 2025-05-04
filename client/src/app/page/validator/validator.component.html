@@ -2,6 +2,14 @@
   <app-wallet (cancel)="toggleWallet()"/>
 }
 
+@if(processingPayout()) {
+  <div class="fixed w-screen flex items-center justify-center h-screen top-0 left-0 z-20 bg-neutral-800/40">
+    <div class="relative w-[min(100%,400px)] bg-neutral-800 p-4 rounded-md">
+        <span class="block text-base text-center text-white/60 my-4">Claiming Payouts...</span>
+    </div>
+  </div>
+}
+
 <div class="w-screen h-screen flex p-4">
   <div class="flex flex-col  w-[min(100%,900px)] mx-auto">
     <section class="flex items-center justify-end gap-4 mb-8">

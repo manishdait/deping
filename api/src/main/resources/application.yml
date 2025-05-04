@@ -2,6 +2,8 @@ server:
   port: 8080
   
 spring:
+  config:
+    import: optional:file:.env[.properties]
   application:
     name: api
   datasource:
@@ -12,7 +14,7 @@ spring:
   jpa:
     database: postgresql
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
   hiero:
     account-id: ${HIERO_ACCOUNT_ID}
     private-key: ${HIERO_PRIVATE_KEY}

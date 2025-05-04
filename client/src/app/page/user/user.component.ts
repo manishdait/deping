@@ -4,6 +4,7 @@ import { WebsiteService } from '../../service/website.service';
 import { WebsiteResponse } from '../../model/website.type';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { fontawsomeIcons } from '../../shared/fa-icons';
+import { TicksDto } from '../../model/ticks.type';
 
 @Component({
   selector: 'app-user',
@@ -17,6 +18,7 @@ export class UserComponent implements OnInit {
 
   addUrl = signal(false);
   websites = signal<WebsiteResponse[]>([]);
+  ticks = signal<{[key:number]: {open: boolean, ticks: TicksDto[]}}>({});
 
   toggleAddUrl() {
     this.addUrl.update(toggle => !toggle);
@@ -27,14 +29,23 @@ export class UserComponent implements OnInit {
     this.websiteService.fetchUserWebsites().subscribe({
       next: (res) => {
         this.websites.set(res.content);
+        for (let url of res.content) {
+          this.ticks()[url.id] = {open: false, ticks: []};
+        }
       }
     })
   }
 
   getTicks(id: number) {
+    if (this.ticks()[id] && this.ticks()[id].open) {
+      this.ticks()[id].open = false;
+      return;
+    }
+
     this.websiteService.fetchWebsitesTicks(id).subscribe({
       next: (res) => {
-        console.log(res);
+        this.ticks()[id].ticks = res;
+        this.ticks()[id].open = true;
       }
     })
   }

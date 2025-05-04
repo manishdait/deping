@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class AuthHandshakeInterceptor implements HandshakeInterceptor {
+public class WebsocketHandshakeInterceptor implements HandshakeInterceptor {
   private final JwtProvider jwtProvider;
   private final ValidatorService validatorService;
 

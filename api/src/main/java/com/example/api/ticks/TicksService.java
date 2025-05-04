@@ -3,8 +3,6 @@ package com.example.api.ticks;
 import java.time.Instant;
 import java.util.List;
 
-import javax.management.RuntimeErrorException;
-
 import org.springframework.stereotype.Service;
 
 import com.example.api.validator.Validator;
@@ -43,11 +41,7 @@ public class TicksService {
   }
 
   public List<TicksDto> getTicks(Long websiteId) {
-    System.out.println("App: " + websiteId);
-    Website website = websiteRepository.findById(websiteId).orElseThrow(
-      () -> new RuntimeException("Not found")
-    );
-    return ticksRepository.findByWebsite(website).stream()
+    return ticksRepository.findByWebsiteId(websiteId).stream()
       .map(w -> new TicksDto(w.getStatus(), websiteId, w.getValidator().getEmail()))
       .toList();
   }

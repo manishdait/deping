@@ -7,13 +7,13 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
-import com.example.api.security.AuthHandshakeInterceptor;
+import com.example.api.security.WebsocketHandshakeInterceptor;
 
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
   @Autowired
-  private AuthHandshakeInterceptor handshakeInterceptor;
+  private WebsocketHandshakeInterceptor handshakeInterceptor;
 
   @Override
   public void configureMessageBroker(MessageBrokerRegistry registry) {
@@ -23,6 +23,7 @@ public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
 
   @Override
   public void registerStompEndpoints(StompEndpointRegistry registry) {
-    registry.addEndpoint("/ws-hub").setAllowedOrigins("http://localhost:4200").addInterceptors(handshakeInterceptor).withSockJS();
+    registry.addEndpoint("/ws-hub").setAllowedOrigins("http://localhost:4200")
+      .addInterceptors(handshakeInterceptor).withSockJS();
   }  
 }

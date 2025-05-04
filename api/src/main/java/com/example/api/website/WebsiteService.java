@@ -6,18 +6,20 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import com.example.api.hub.HubScheduler;
+import com.example.api.hub.HubDispatcher;
 import com.example.api.shared.PagedEntity;
 import com.example.api.user.User;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class WebsiteService {
   private final WebsiteRepository websiteRepository;
-  private final HubScheduler hubScheduler;
-  
+  private final HubDispatcher hubDispatcher;
+ 
+  @Transactional
   public WebsiteResponse createWebsite(WebsiteRequest request, Authentication authentication) {
     User user = (User) authentication.getPrincipal();
     Website website = Website.builder()
@@ -26,7 +28,7 @@ public class WebsiteService {
       .build();
     
     websiteRepository.save(website);
-    hubScheduler.addUrl(website);
+    hubDispatcher.addUrl(website);
     return new WebsiteResponse(website.getId(), website.getUrl());
   }
 

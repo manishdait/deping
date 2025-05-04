@@ -1,5 +1,3 @@
-import { Role } from "./role.type";
-
 export interface RegistrationRequest {
   email: string;
   password: string;
@@ -17,4 +15,6 @@ export interface AuthResponse {
   accessToken: string;
   refreshToken: string;
 }
+
+export type Role = 'User' | 'Validator';
 

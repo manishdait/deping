@@ -20,6 +20,7 @@ import com.openelements.hiero.base.AccountClient;
 import com.openelements.hiero.base.HieroException;
 import com.openelements.hiero.base.data.Account;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -35,6 +36,7 @@ public class AuthService {
 
   private final AccountClient accountClient;
 
+  @Transactional
   public AuthResponse registerUser(RegistrationRequest request) {
     if (request.role().equals("User")) {
       return createUser(request); 
@@ -51,7 +53,7 @@ public class AuthService {
       AbstractUserEntity user = (AbstractUserEntity) authentication.getPrincipal();
       String accessToken = jwtProvider.generateToken(user.getEmail());
       
-      return new AuthResponse(user.getEmail(), user.getRole().getRole(), accessToken, accessToken);
+      return new AuthResponse(user.getEmail(), user.getRole().getRole(), accessToken, jwtProvider.generateToken(user.getUsername(), 60*60*24));
     } catch (BadCredentialsException e) {
       throw new BadCredentialsException("Invalid username or password");
     } catch (Exception e) {
@@ -70,7 +72,7 @@ public class AuthService {
     userRepository.save(user);
 
     String accessToken = jwtProvider.generateToken(user.getEmail());
-    return new AuthResponse(user.getEmail(), "User", accessToken, accessToken);
+    return new AuthResponse(user.getEmail(), "User", accessToken, jwtProvider.generateToken(user.getUsername(), 60*60*24));
   }
 
   private AuthResponse createValidator(RegistrationRequest request) {
