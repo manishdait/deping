@@ -19,4 +19,4 @@ spring:
     account-id: ${HIERO_ACCOUNT_ID}
     private-key: ${HIERO_PRIVATE_KEY}
     network:
-      name: hedera-testnet
+      name: ${HIERO_NETWORK}
