@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.api.shared.PagedEntity;
-import com.example.api.ticks.TicksDto;
 import com.example.api.ticks.TicksService;
+import com.example.api.ticks.dto.TicksResponse;
+import com.example.api.website.dto.WebsiteRequest;
+import com.example.api.website.dto.WebsiteResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -38,7 +40,7 @@ public class WebsiteController {
   }
 
   @GetMapping("/tick/{id}")
-  public ResponseEntity<List<TicksDto>> getTicks(@PathVariable Long id) {
+  public ResponseEntity<List<TicksResponse>> getTicks(@PathVariable Long id) {
     return ResponseEntity.status(HttpStatus.OK).body(ticksService.getTicks(id)); 
   }
 }

@@ -4,8 +4,8 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 
-import com.example.api.ticks.TicksDto;
 import com.example.api.ticks.TicksService;
+import com.example.api.ticks.dto.TicksRequest;
 
 import lombok.RequiredArgsConstructor;
 
@@ -16,7 +16,7 @@ public class HubController {
 
   @MessageMapping("/generate-ticks")
   @SendTo("/topic/public")
-  public void generateTicks(TicksDto request) {
+  public void generateTicks(TicksRequest request) {
     ticksService.createTick(request);
   }
 }

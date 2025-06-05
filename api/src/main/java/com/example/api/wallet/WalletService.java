@@ -6,7 +6,9 @@ import java.util.Optional;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import com.example.api.validator.Validator;
+import com.example.api.user.User;
+import com.example.api.wallet.dto.TransferHbarRequest;
+import com.example.api.wallet.dto.WalletDto;
 import com.hedera.hashgraph.sdk.AccountId;
 import com.hedera.hashgraph.sdk.EvmAddress;
 import com.hedera.hashgraph.sdk.Hbar;
@@ -19,45 +21,43 @@ import com.openelements.hiero.base.HieroException;
 import com.openelements.hiero.base.data.AccountInfo;
 import com.openelements.hiero.base.mirrornode.AccountRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class WalletService {
+  private final WalletRepository walletRepository;
+
   private final AccountClient accountClient;
   private final AccountRepository accountRepository;
-
   private final HieroContext hieroContext;
 
   public WalletDto getWallet(Authentication authentication) {
-    Validator validator = (Validator) authentication.getPrincipal();
-    WalletData walletData = fetchWalletData(validator.getAccountId());
-    return new WalletDto(validator.getEmail(), validator.getAccountId(), walletData.pubKey(), walletData.balance()); 
+    User user = (User) authentication.getPrincipal();
+    Wallet wallet = walletRepository.findByUser(user).orElseThrow(
+      () -> new EntityNotFoundException("No wallet available for user")
+    );
+
+    WalletData walletData = fetchWalletData(wallet.getAccountId());
+    return new WalletDto(user.getEmail(), wallet.getAccountId(), walletData.evmAddr(), walletData.balance()); 
   }
 
   public WalletDto transferHbar(TransferHbarRequest request, Authentication authentication) {
-    Validator validator = (Validator) authentication.getPrincipal();
+    User user = (User) authentication.getPrincipal();
+    Wallet wallet = walletRepository.findByUser(user).orElseThrow(
+      () -> new EntityNotFoundException("No wallet available for user")
+    );
+
+    transfer(wallet, request.pbKey(), request.amount());
     
-    TransferTransaction transactionTx = new TransferTransaction()
-    .addHbarTransfer(AccountId.fromString(validator.getAccountId()), Hbar.from(BigDecimal.valueOf(request.amount()).multiply(BigDecimal.valueOf(-1))))
-    .addHbarTransfer(EvmAddress.fromString(request.pubKey()), Hbar.from(BigDecimal.valueOf(request.amount())))
-    .freezeWith(hieroContext.getClient());
-    
-    try {
-      TransactionResponse txResponse = transactionTx.sign(PrivateKey.fromString(validator.getPrvKey())).execute(hieroContext.getClient());
-      txResponse.getReceipt(hieroContext.getClient());
-    } catch (Exception e) {
-      e.printStackTrace();
-      System.out.println(e.getCause());
-    }
-    
-    WalletData walletData = fetchWalletData(validator.getAccountId());
-    return new WalletDto(validator.getEmail(), validator.getAccountId(), walletData.pubKey(), walletData.balance()); 
+    WalletData walletData = fetchWalletData(wallet.getAccountId());
+    return new WalletDto(user.getEmail(), wallet.getAccountId(), walletData.evmAddr(), walletData.balance()); 
   }
 
-  private WalletData fetchWalletData(String id) {
+  private WalletData fetchWalletData(String accountId) {
     try {
-      Optional<AccountInfo> _accountInfo = accountRepository.findById(id);
+      Optional<AccountInfo> _accountInfo = accountRepository.findById(accountId);
       if (_accountInfo.isPresent()) {
         AccountInfo accountInfo = _accountInfo.get();
         
@@ -68,7 +68,7 @@ public class WalletService {
       }
       
       return new WalletData(
-        accountClient.getAccountBalance(id).getValue().doubleValue(), 
+        accountClient.getAccountBalance(accountId).getValue().doubleValue(), 
         ""
       );
     } catch (HieroException e) {
@@ -76,6 +76,29 @@ public class WalletService {
       throw new RuntimeException("Error getting wallet data");
     }
   }
+
+  private void transfer(Wallet wallet, String recipent, double amount) {
+    AccountId accountId = AccountId.fromString(wallet.getAccountId());
+    PrivateKey senderPrKey = PrivateKey.fromString(wallet.getPrKey());
+
+    BigDecimal hbar = BigDecimal.valueOf(amount);
+    EvmAddress recipentPbKey = EvmAddress.fromString(recipent);
+
+    TransferTransaction transactionTx = new TransferTransaction()
+      .addHbarTransfer(accountId, Hbar.from(hbar.multiply(BigDecimal.valueOf(-1))))
+      .addHbarTransfer(recipentPbKey, Hbar.from(hbar))
+      .freezeWith(hieroContext.getClient());
+    
+    try {
+      TransactionResponse txResponse = transactionTx.sign(senderPrKey)
+        .execute(hieroContext.getClient());
+
+      txResponse.getReceipt(hieroContext.getClient());
+    } catch (Exception e) {
+      e.printStackTrace();
+      System.out.println(e.getCause());
+    }
+  }
 }
 
-record WalletData(double balance, String pubKey) {}
+record WalletData(double balance, String evmAddr) {}

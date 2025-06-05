@@ -1,0 +1,19 @@
+{
+  "properties": [
+    {
+      "name": "deping.client-url",
+      "type": "java.lang.String",
+      "description": "Clinet url for deping"
+    },
+    {
+      "name": "spring.security.access-token-expiry",
+      "type": "java.lang.String",
+      "description": "Secret key for access token"
+    },
+    {
+      "name": "spring.security.refresh-token-key",
+      "type": "java.lang.String",
+      "description": "Secret key for refresh token"
+    }
+  ]
+}

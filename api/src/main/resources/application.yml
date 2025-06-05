@@ -5,7 +5,7 @@ spring:
   config:
     import: optional:file:.env[.properties]
   application:
-    name: api
+    name: deping-api
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/deping_db
@@ -15,8 +15,14 @@ spring:
     database: postgresql
     hibernate:
       ddl-auto: update
+  security:
+    access-token-key: ${ACCESS_TOKEN_KEY:8cfe790badd33fc5655c7a1f713b7fde3142fe6c204e21a19ba64defb43edf46}
+    refresh-token-key: ${REFRESH_TOKEN_KEY:8cfe790badd33fc5655c7a1f713b7fde3142fe6c204e21a19ba64defb43edf46}
   hiero:
     account-id: ${HIERO_ACCOUNT_ID}
     private-key: ${HIERO_PRIVATE_KEY}
     network:
       name: ${HIERO_NETWORK}
+
+deping:
+  client-url: ${CLIENT_URL:http://localhost:4200}

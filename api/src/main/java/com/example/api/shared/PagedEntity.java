@@ -12,7 +12,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PagedEntity<T> {
+  private long totalElements;
   private boolean hasNext;
-  private boolean hasPrev;
+  private boolean hasPrevious;
   private List<T> content;
 }

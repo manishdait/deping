@@ -2,7 +2,7 @@ package com.example.api.ticks;
 
 import java.time.Instant;
 
-import com.example.api.validator.Validator;
+import com.example.api.user.User;
 import com.example.api.website.Website;
 
 import jakarta.persistence.Column;
@@ -48,6 +48,6 @@ public class Ticks {
   private Website website;
 
   @ManyToOne()
-  @JoinColumn(name = "validator_id")
-  private Validator validator;
+  @JoinColumn(name = "user_id")
+  private User validator;
 }

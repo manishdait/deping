@@ -1,4 +1,4 @@
-package com.example.api.shared;
+package com.example.api.user;
 
 import lombok.Getter;
 

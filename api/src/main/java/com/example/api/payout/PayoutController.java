@@ -3,6 +3,8 @@ package com.example.api.payout;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.api.payout.dto.PayoutDto;
+
 import lombok.RequiredArgsConstructor;
 
 import java.util.Map;

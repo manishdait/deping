@@ -1,28 +1,64 @@
 package com.example.api.user;
 
+import java.security.Principal;
+import java.util.Collection;
 import java.util.List;
 
-import com.example.api.shared.AbstractUserEntity;
-import com.example.api.website.Website;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-@SuperBuilder
+@Builder
 @Entity
 @Table(name = "_user")
-public class User extends AbstractUserEntity {
-  @OneToMany(mappedBy = "user")
-  private List<Website> websites;
-}
+public class User implements UserDetails, Principal {
+  @Id
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq_generator")
+  @SequenceGenerator(name = "user_seq_generator", sequenceName = "user_seq", allocationSize = 1, initialValue = 101)
+  @Column(name = "id")
+  private Long id;
 
+  @Column(name = "email", unique = true)
+  private String email;
+
+  @Column(name = "password")
+  private String password;
+
+  @Enumerated(value = EnumType.STRING)
+  @Column(name = "role")
+  private Role role;
+
+  @Override
+  public String getName() {
+    return this.email;
+  }
+
+  @Override
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    return List.of(new SimpleGrantedAuthority("ROLE_" + this.role.getRole()));
+  }
+
+  @Override
+  public String getUsername() {
+    return this.email;
+  }
+}

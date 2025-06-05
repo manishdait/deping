@@ -1,7 +1,5 @@
 package com.example.api.auth;
 
-import java.util.List;
-
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -9,13 +7,17 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.api.auth.dto.AuthRequest;
+import com.example.api.auth.dto.AuthResponse;
+import com.example.api.auth.dto.RegistrationRequest;
+import com.example.api.payout.Payout;
+import com.example.api.payout.PayoutRepository;
 import com.example.api.security.JwtProvider;
-import com.example.api.shared.AbstractUserEntity;
-import com.example.api.shared.Role;
+import com.example.api.user.Role;
 import com.example.api.user.User;
 import com.example.api.user.UserRepository;
-import com.example.api.validator.Validator;
-import com.example.api.validator.ValidatorRepository;
+import com.example.api.wallet.Wallet;
+import com.example.api.wallet.WalletRepository;
 import com.openelements.hiero.base.AccountClient;
 import com.openelements.hiero.base.HieroException;
 import com.openelements.hiero.base.data.Account;
@@ -27,7 +29,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthService {
   private final UserRepository userRepository;
-  private final ValidatorRepository validatorRepository;
+  private final PayoutRepository payoutRepository;
+  private final WalletRepository walletRepository;
 
   private final PasswordEncoder passwordEncoder;
   private final AuthenticationManager authenticationManager;
@@ -38,66 +41,62 @@ public class AuthService {
 
   @Transactional
   public AuthResponse registerUser(RegistrationRequest request) {
-    if (request.role().equals("User")) {
-      return createUser(request); 
+    userRepository.findByEmail(request.email()).ifPresent(u -> {
+      throw new IllegalStateException(String.format("User already exists with email %s", u.getEmail()));
+    });
+
+    User user = User.builder()
+      .email(request.email())
+      .password(passwordEncoder.encode(request.password()))
+      .role(request.role())
+      .build();
+
+    userRepository.save(user);
+
+    if (user.getRole() == Role.VALIDATOR) {
+      createWallet(user);
     }
-    return createValidator(request);
+
+    String accessToken = jwtProvider.generateAccessToken(user.getUsername());
+    String refreshToken = jwtProvider.generateRefreshToken(user.getUsername());
+    return new AuthResponse(user.getEmail(), user.getRole(), accessToken, refreshToken);
   }
-  
+
   public AuthResponse authenticateUser(AuthRequest request) {
     try {
       Authentication authentication = authenticationManager.authenticate(
         new UsernamePasswordAuthenticationToken(request.email(), request.password())
       );
 
-      AbstractUserEntity user = (AbstractUserEntity) authentication.getPrincipal();
-      String accessToken = jwtProvider.generateToken(user.getEmail());
+      User user = (User) authentication.getPrincipal();
+
+      String accessToken = jwtProvider.generateAccessToken(user.getUsername());
+      String refreshToken = jwtProvider.generateRefreshToken(user.getUsername());
       
-      return new AuthResponse(user.getEmail(), user.getRole().getRole(), accessToken, jwtProvider.generateToken(user.getUsername(), 60*60*24));
+      return new AuthResponse(user.getEmail(), user.getRole(), accessToken, refreshToken);
     } catch (BadCredentialsException e) {
       throw new BadCredentialsException("Invalid username or password");
-    } catch (Exception e) {
-      throw new RuntimeException(e.getMessage());
     }
   }
 
-  private AuthResponse createUser(RegistrationRequest request) {
-    User user = User.builder()
-      .email(request.email())
-      .password(passwordEncoder.encode(request.password()))
-      .role(Role.USER)
-      .websites(List.of())
-      .build();
-
-    userRepository.save(user);
-
-    String accessToken = jwtProvider.generateToken(user.getEmail());
-    return new AuthResponse(user.getEmail(), "User", accessToken, jwtProvider.generateToken(user.getUsername(), 60*60*24));
-  }
-
-  private AuthResponse createValidator(RegistrationRequest request) {
-    Account account;
-
+  private void createWallet(User user) {
     try {
-      account = accountClient.createAccount();
+      Account account = accountClient.createAccount();
+      
+      Wallet wallet = Wallet.builder()
+        .accountId(account.accountId().toString())
+        .pbKey(account.publicKey().toString())
+        .prKey(account.privateKey().toString())
+        .user(user)
+        .build();
+      
+      walletRepository.save(wallet);
+      
+      Payout payout = Payout.builder().amount(0L).user(user).build();
+      payoutRepository.save(payout);
     } catch (HieroException e) {
       e.printStackTrace();
-      throw new RuntimeException("Error creating hiero account");
+      throw new RuntimeException(String.format("Error creating wallet for user %s", user.getEmail()));
     }
-
-    Validator validator = Validator.builder()
-      .email(request.email())
-      .password(passwordEncoder.encode(request.password()))
-      .role(Role.VALIDATOR)
-      .payout(0l)
-      .accountId(account.accountId().toString())
-      .pubKey(account.publicKey().toString())
-      .prvKey(account.privateKey().toString())
-      .build();
-    
-    validatorRepository.save(validator);
-    
-    String accessToken = jwtProvider.generateToken(validator.getEmail());
-    return new AuthResponse(validator.getEmail(), "Validator", accessToken, accessToken);
   }
 }

@@ -9,7 +9,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 
 import com.example.api.website.Website;
 import com.example.api.website.WebsiteRepository;
-import com.example.api.website.WebsiteResponse;
+import com.example.api.website.dto.WebsiteResponse;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
