@@ -4,7 +4,7 @@ import { WebsiteService } from '../../service/website.service';
 import { WebsiteResponse } from '../../model/website.type';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { fontawsomeIcons } from '../../shared/fa-icons';
-import { TicksDto } from '../../model/ticks.type';
+import { TicksResponse } from '../../model/ticks.type';
 
 @Component({
   selector: 'app-user',
@@ -18,7 +18,7 @@ export class UserComponent implements OnInit {
 
   addUrl = signal(false);
   websites = signal<WebsiteResponse[]>([]);
-  ticks = signal<{[key:number]: {open: boolean, ticks: TicksDto[]}}>({});
+  ticks = signal<{[key:number]: {open: boolean, ticks: TicksResponse[]}}>({});
 
   toggleAddUrl() {
     this.addUrl.update(toggle => !toggle);

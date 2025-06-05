@@ -3,8 +3,8 @@ import { Client, Stomp, StompHeaders } from '@stomp/stompjs'
 import { LocalStorageService } from 'ngx-webstorage';
 import { Subject } from 'rxjs';
 import SockJS from 'sockjs-client';
-import { TicksDto } from '../model/ticks.type';
 import { WebsiteResponse } from '../model/website.type';
+import { TicksRequest } from '../model/ticks.type';
 
 @Injectable({
   providedIn: 'root'
@@ -43,7 +43,7 @@ export class HubService {
     this.stompClient?.activate();
   }
 
-  sendMessage(msg: TicksDto) {
+  sendMessage(msg: TicksRequest) {
     msg.validator = this.localstore.retrieve('username');
     
     if(this.stompClient && this.stompClient.connected) {

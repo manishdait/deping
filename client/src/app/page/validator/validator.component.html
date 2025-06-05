@@ -3,36 +3,38 @@
 }
 
 @if(processingPayout()) {
-  <div class="fixed w-screen flex items-center justify-center h-screen top-0 left-0 z-20 bg-neutral-800/40">
-    <div class="relative w-[min(100%,400px)] bg-neutral-800 p-4 rounded-md">
-        <span class="block text-base text-center text-white/60 my-4">Claiming Payouts...</span>
+  <div class="fixed w-screen flex items-center justify-center h-screen top-0 left-0 z-20 bg-neutral-900/20">
+    <div class="relative w-[min(100%,400px)] bg-primary-100 p-4 rounded-md">
+      <span class="block text-base text-center text-secondary-300 my-4">Claiming Payouts...</span>
     </div>
   </div>
 }
 
 <div class="w-screen h-screen flex p-4">
   <div class="flex flex-col  w-[min(100%,900px)] mx-auto">
-    <section class="flex items-center justify-end gap-4 mb-8">
-      <button class="flex items-center justify-center gap-2 bg-purple-600 text-base text-white font-medium rounded-md p-2 cursor-pointer" (click)="toggleWallet()">
+    <section class="flex items-center justify-between">
+      <div class="w-[10rem] h-[2.5rem] object-contain">
+        <img class="w-full h-full" src="asset/banner_icon.svg"/>
+      </div>
+
+      <button class="flex items-center justify-center gap-2 bg-purple-100 text-[1rem] hover:bg-purple-200 text-white font-medium rounded-md px-2 py-1 cursor-pointer" (click)="toggleWallet()">
         <fa-icon [icon]="'wallet'"/>
         <span>Wallet</span>
       </button>
     </section>
 
-    <section class="w-full h-full flex flex-col justify-center gap-4 items-center">
-      <span class="w-[min(100%,600px)] text-center text-2xl text-white/50 font-medium">{{ 'Hi ' + username() + ', Your available payouts are' }}</span>
+    <section class="w-full h-full flex flex-col gap-4 items-center mt-16">
+      <div class="w-[20rem] h-[20rem] flex flex-col items-center justify-center border-[.4em] rounded-[100%]" [class]="{'border-purple-100': !startedValidating(), 'border-purple-100/10': startedValidating()}">
+        <h1 class="text-6xl font-medium text-center" [class]="{'text-secondary-300': !startedValidating(), 'text-purple-100': startedValidating()}">{{ payouts().toFixed(6) }}</h1>
+        <span class="text-base text-secondary-200 font-medium">HBAR</span>
+      </div>
 
-      <span class="flex items-end gap-1 my-20">
-        <h1 class="text-8xl text-white font-medium text-center">{{ payouts() }}</h1>
-        <span class="text-base text-white/50 font-medium">HBAR</span>
-      </span>
-
-      <div class="flex items-center justify-center gap-4">
+      <div class="w-full flex flex-col items-center justify-center gap-4">
         @if (!startedValidating()) {
-          <button class="bg-purple-600 text-base text-white font-medium p-2 rounded-sm border-[.1em] border-purple-600 mt-2 cursor-pointer hover:bg-purple-700 hover:border-purple-700 mx-auto" type="button" (click)="startValidate()">Start Earning</button>
-          <button class="bg-purple-600 text-base text-white font-medium p-2 rounded-sm border-[.1em] border-purple-600 mt-2 cursor-pointer hover:bg-purple-700 hover:border-purple-700 mx-auto" type="button" (click)="claimPayouts()">Claim Payouts</button>
+          <button class="w-[min(100%,200px)] bg-purple-100 text-[1rem] text-primary-100 font-medium px-2 py-1 rounded-md border-[.1em] border-purple-100 cursor-pointer hover:bg-purple-200 hover:border-purple-200" type="button" (click)="claimPayouts()">Claim Payouts</button>
+          <button class="w-[min(100%,200px)] bg-primary-100 text-[1rem] text-purple-100 font-medium px-2 py-1 rounded-md border-[.1em] border-purple-100 cursor-pointer hover:bg-secondary-500/5" type="button" (click)="startValidate()">Start Earning</button>
         } @else {
-          <button class="bg-purple-600 text-base text-white font-medium p-2 rounded-sm border-[.1em] border-purple-600 mt-2 cursor-pointer hover:bg-purple-700 hover:border-purple-700 mx-auto" type="button" (click)="stopValidate()">Stop</button>
+          <button class="w-[min(100%,200px)] bg-primary-100 text-[1rem] text-purple-100 font-medium px-2 py-1 rounded-md border-[.1em] border-purple-100 cursor-pointer hover:bg-secondary-500/5" type="button" (click)="stopValidate()">Stop</button>
         }
       </div>
     </section>

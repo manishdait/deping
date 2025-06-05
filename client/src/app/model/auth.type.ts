@@ -16,5 +16,4 @@ export interface AuthResponse {
   refreshToken: string;
 }
 
-export type Role = 'User' | 'Validator';
-
+export type Role = 'USER' | 'VALIDATOR';

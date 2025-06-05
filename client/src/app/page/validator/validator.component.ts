@@ -1,13 +1,13 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { WalletComponent } from '../../component/wallet/wallet.component';
 import { HubService } from '../../service/hub.service';
-import { TicksDto } from '../../model/ticks.type';
 import { PayoutService } from '../../service/payout.service';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { fontawsomeIcons } from '../../shared/fa-icons';
 import { AuthService } from '../../service/auth.service';
 import { UptimeService } from '../../service/uptime.service';
 import { WebsiteResponse } from '../../model/website.type';
+import { TicksRequest } from '../../model/ticks.type';
 
 @Component({
   selector: 'app-validator',
@@ -72,7 +72,7 @@ export class ValidatorComponent implements OnInit {
   checkUptime(website: WebsiteResponse) {
     this.uptimeService.getUptime(website.url)
       .then((res) => {
-        const req: TicksDto = {
+        const req: TicksRequest = {
           status: 'UP',
           websiteId: website.id,
           validator: ''
@@ -82,7 +82,7 @@ export class ValidatorComponent implements OnInit {
         this.getPayouts();
       })
       .catch((err) => {
-        const req: TicksDto = {
+        const req: TicksRequest = {
           status: 'DOWN',
           websiteId: website.id,
           validator: ''

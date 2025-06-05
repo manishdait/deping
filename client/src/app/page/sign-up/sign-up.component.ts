@@ -14,7 +14,7 @@ export class SignUpComponent {
   authService = inject(AuthService);
   router = inject(Router);
 
-  role = signal<Role>('User');
+  role = signal<Role>('USER');
   formError = signal<boolean>(false);
   
   form: FormGroup;
@@ -50,7 +50,7 @@ export class SignUpComponent {
 
     this.authService.registerUser(req).subscribe({
       next: (res) => {
-        if (res.role === 'User') {
+        if (res.role === 'USER') {
           this.router.navigate(['/user'], {replaceUrl: true});
         } else {
           this.router.navigate(['/validator'], {replaceUrl: true});

@@ -4,7 +4,7 @@ import { WebsiteRequest, WebsiteResponse } from '../model/website.type';
 import { Observable } from 'rxjs';
 import { LocalStorageService } from 'ngx-webstorage';
 import { Page } from '../model/page.type';
-import { TicksDto } from '../model/ticks.type';
+import { TicksResponse } from '../model/ticks.type';
 
 @Injectable({
   providedIn: 'root'
@@ -24,8 +24,8 @@ export class WebsiteService {
     }});
   }
 
-  fetchWebsitesTicks(id: number): Observable<TicksDto[]> {
-    return this.client.get<TicksDto[]>(`http://localhost:8080/api/v1/websites/tick/${id}`, {headers: {
+  fetchWebsitesTicks(id: number): Observable<TicksResponse[]> {
+    return this.client.get<TicksResponse[]>(`http://localhost:8080/api/v1/websites/tick/${id}`, {headers: {
       'Authorization': 'Bearer ' + this.localstore.retrieve('accessToken')
     }});
   }

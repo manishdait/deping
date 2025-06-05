@@ -48,7 +48,7 @@ export class WalletComponent implements OnInit {
 
   transfer() {
     const req: TransferHbarRequest = {
-      pubKey: this.form.get('pubKey')?.value,
+      pbKey: this.form.get('pubKey')?.value,
       amount: this.form.get('amount')?.value
     }
 

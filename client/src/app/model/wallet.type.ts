@@ -6,6 +6,6 @@ export interface WalletDto {
 }
 
 export interface TransferHbarRequest {
-  pubKey: string;
+  pbKey: string;
   amount: number;
 }

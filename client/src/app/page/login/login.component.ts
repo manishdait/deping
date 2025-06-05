@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AuthRequest } from '../../model/auth.type';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../service/auth.service';
 
 @Component({
@@ -12,6 +12,7 @@ import { AuthService } from '../../service/auth.service';
 })
 export class LoginComponent {
   authService = inject(AuthService);
+  router = inject(Router);
 
   formError = signal<boolean>(false);
   form: FormGroup;
@@ -42,7 +43,11 @@ export class LoginComponent {
 
     this.authService.authenticateUser(req).subscribe({
       next: (res) => {
-        console.log(res);
+        if (res.role === 'USER') {
+          this.router.navigate(['/user'], {replaceUrl: true});
+        } else {
+          this.router.navigate(['/validator'], {replaceUrl: true});
+        }
       }
     })
   }
