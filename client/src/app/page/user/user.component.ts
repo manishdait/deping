@@ -5,10 +5,11 @@ import { WebsiteResponse } from '../../model/website.type';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { fontawsomeIcons } from '../../shared/fa-icons';
 import { TicksResponse } from '../../model/ticks.type';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-user',
-  imports: [FontAwesomeModule, UrlFormComponent],
+  imports: [RouterLink, FontAwesomeModule, UrlFormComponent],
   templateUrl: './user.component.html',
   styleUrl: './user.component.css'
 })

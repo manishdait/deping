@@ -21,5 +21,9 @@ export const routes: Routes = [
   {
     path: 'validator',
     loadComponent: () => import('./page/validator/validator.component').then(c => c.ValidatorComponent)
+  },
+  {
+    path: 'details/:id',
+    loadComponent: () => import('./page/details/details.component').then(c => c.DetailsComponent)
   }
 ];

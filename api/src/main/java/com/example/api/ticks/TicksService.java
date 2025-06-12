@@ -73,8 +73,8 @@ public class TicksService {
       }
       double avgUp = (double)up/(double)ticks.size();
       double avgDown = (double)down/(double)ticks.size();
-      Status status = avgUp > avgDown? Status.UP : Status.DOWN;
-      response.add(ptr++, new TicksResponse(status, avgUp, avgDown, up, down, websiteId));
+      Status status = avgUp >= avgDown? Status.UP : Status.DOWN;
+      response.add(ptr++, new TicksResponse(status, avgUp, avgDown, up, down, start, end, websiteId));
       
       end = start;
     }

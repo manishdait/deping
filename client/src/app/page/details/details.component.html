@@ -1,0 +1,51 @@
+<div class="w-screen h-screen p-4">
+  <div class="flex flex-col  w-[min(100%,900px)] mx-auto">
+    <section class="flex items-center justify-between mb-9">
+      <div class="w-[10rem] h-[2.5rem] object-contain">
+        <img class="w-full h-full" src="asset/banner_icon.svg"/>
+      </div>
+    </section>
+
+    <span class="gap-2 text-[1rem] font-medium">Url: <a class="font-normal cursor-pointer text-purple-200" target="_blank" [href]="details().url">{{ details().url }}</a></span>
+    <span class="gap-2 text-[1rem] font-medium">Current Status: <span class="font-normal" [class]="{'text-green-500': getStatus() === 'UP', 'text-red-500': getStatus() === 'DOWN', 'text-neutral-800': getStatus() === 'UNKNOWN'}">{{ getStatus() }}</span></span>
+
+    <div class="mt-4">
+      <table class="border-collapse border-[.1em]">
+        <thead>
+          <tr class="border-[.1em] border-neutral-300 text-[.9rem] font-medium">
+            <td class="p-2 text-center">Total</td>
+            <td class="p-2 text-center">Up</td>
+            <td class="p-2 text-center">Down</td>
+            <td class="p-2 text-center">Avg Up</td>
+            <td class="p-2 text-center">Avg Down</td>
+            <td class="p-2 text-center">Timestamp</td>
+          </tr>
+        </thead>
+        <tbody>
+          @for (tick of details().ticks; track $index) {
+            @if (tick) {
+              <tr class="border-[.1em] border-neutral-300 text-[.9rem]">
+                <td class="p-2 text-center">{{ tick.up + tick.down }}</td>
+                <td class="p-2 text-center">{{ tick.up }}</td>
+                <td class="p-2 text-center">{{ tick.down }}</td>
+                <td class="p-2 text-center">{{ tick.avgUp }}</td>
+                <td class="p-2 text-center">{{ tick.avgDown }}</td>
+                <td class="p-2 text-center">{{ getTime(tick.fromTimestamp) + '-' + getTime(tick.toTimestamp) }}</td>
+              </tr>
+            }
+            @else {
+              <tr class="border-[.1em] border-neutral-300 text-[.9rem]">
+                <td class="p-2 text-center">-</td>
+                <td class="p-2 text-center">-</td>
+                <td class="p-2 text-center">-</td>
+                <td class="p-2 text-center">-</td>
+                <td class="p-2 text-center">-</td>
+                <td class="p-2 text-center">-</td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { WebsiteRequest, WebsiteResponse } from '../model/website.type';
+import { WebSiteDto, WebsiteRequest, WebsiteResponse } from '../model/website.type';
 import { Observable } from 'rxjs';
 import { LocalStorageService } from 'ngx-webstorage';
 import { Page } from '../model/page.type';
@@ -20,6 +20,12 @@ export class WebsiteService {
 
   fetchUserWebsites(): Observable<Page<WebsiteResponse>> {
     return this.client.get<Page<WebsiteResponse>>(`http://localhost:8080/api/v1/websites`, {headers: {
+      'Authorization': 'Bearer ' + this.localstore.retrieve('accessToken')
+    }});
+  }
+
+  fetchUserWebsite(id: number): Observable<WebSiteDto> {
+    return this.client.get<WebSiteDto>(`http://localhost:8080/api/v1/websites/${id}`, {headers: {
       'Authorization': 'Bearer ' + this.localstore.retrieve('accessToken')
     }});
   }

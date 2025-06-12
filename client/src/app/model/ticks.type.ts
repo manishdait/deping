@@ -10,7 +10,9 @@ export interface TicksResponse {
   avgDown: number,
   up: number,
   down: number,
+  fromTimestamp: Date,
+  toTimestamp: Date,
   websiteId: number;
 }
 
-export type Status = 'UP' | 'DOWN';
+export type Status = 'UP' | 'DOWN' | 'UNKNOWN';
